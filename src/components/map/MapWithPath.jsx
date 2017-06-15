@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Request from 'request';
 
 import { GoogleMapKey } from '../../config/constants';
@@ -51,13 +50,15 @@ export default class MapWithPath extends React.Component {
             maxZoom: 20,
             center: TROYES_CENTER,
         };
-
         // init the map
         const map = new google.maps.Map(document.getElementById('map'), options);
         this._updateCurrentPosition()
           .then(_ => this._getWaypoints())
-          .then(waypoints => Promise.all(waypoints.map(waypoint => this._setMarker(map, waypoint)))
-              .then(_ => this._setRoute(map, waypoints))
+          .then(waypoints => {
+              const waypointsFiltered = waypoints.filter(waypoint => waypoint !== null)
+              return Promise.all(waypointsFiltered.map(waypoint => this._setMarker(map, waypoint)))
+                .then(_ => this._setRoute(map, waypointsFiltered))
+            }
           )
           .then(_ => this.setState({ map }));
     }
@@ -83,10 +84,12 @@ export default class MapWithPath extends React.Component {
         return Promise.all(this.state.path.map(stainedGlass => {
             // get the stained glass coordinates from his string location
             return new Promise((resolve, reject) => {
+                if (stainedGlass.spatial === undefined) resolve(null)
                 Request(`https://maps.googleapis.com/maps/api/geocode/json?address=${stainedGlass.spatial[0]}&key=${GoogleMapKey}`, (error, response, body) => {
-                    resolve({
-                        name: stainedGlass.name[0],
-                        coordinates: JSON.parse(body).results[0].geometry.location
+                    if (JSON.parse(body).results[ 0 ] === undefined) resolve(null)
+                    else resolve({
+                      name: stainedGlass.name[ 0 ],
+                      coordinates: JSON.parse(body).results[ 0 ].geometry.location
                     })
                 })
             })
