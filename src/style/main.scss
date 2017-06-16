@@ -1,0 +1,75 @@
+@import "pages/dashboard.scss";
+@import "pages/details.scss";
+@import "pages/build-path.scss";
+@import "pages/my-path.scss";
+
+* {
+  font-family: "Roboto";
+}
+
+/**
+ * .container-hide can be used to keep height:100%
+ * under a fixed element like .main
+ */
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.fullheight {
+    height: 100%;
+}
+
+/**
+ * In case of Col in Row that have to be full height, we have to handle cases where the screen with is low (mobile for example)
+ * In these cases, the Col are not inline but have to be full height
+ */
+@media screen and (min-width: 768px) {
+    .fullheight-row {
+        height: 100%;
+    }
+}
+@media screen and (max-width: 768px) {
+    .fullheight-row > * {
+        height: 100%;
+    }
+}
+
+.appbar-title, .appbar-title:active {
+    color: #fff;
+}
+
+.appbar-title:hover {
+    color: #E5E5E5;
+}
+
+/**
+ * Container under the appbar
+ */
+.app-container {
+  top: 64px;
+  width: 100%;
+  position: fixed;
+  bottom: 0px;
+  overflow: auto;
+}
+
+.progress-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.progress {
+    text-align: center;
+}
+
+.subtitle {
+    background: #26C6DA;
+    padding: 10px 10px 10px 20px;
+    color: #fff;
+}
